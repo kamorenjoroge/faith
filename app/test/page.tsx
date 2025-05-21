@@ -1,13 +1,94 @@
-import Link from 'next/link'
-const Page = () => {
-  return (
-    <div className='flex flex-col items-center justify-center min-h-screen text-7xl bg-back p-24'>
-     <div className=' bg-primary text-white p-10 rounded-lg'>
-      <Link href='/'>Click Me </Link>
-      </div>
-      
-    </div>
-  )
+"use client";
+import axios from "axios";
+import Table from "../components/Tables";
+import { useEffect, useState } from "react";
+
+interface Test {
+  _id: string;
+  name: string;
 }
 
-export default Page
+const Page = () => {
+  const [tests, setTests] = useState<Test[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchTests = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await axios.get("/api/test");
+      setTests(response.data.data || response.data);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "An unknown error occurred"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTests();
+  }, []);
+
+  const columns = [
+    {
+      header: "Name",
+      accessor: "name" as keyof Test,
+      className: "min-w-[180px]",
+    },
+    {
+      header: "Action",
+      accessor: "_id" as keyof Test, // Use unique key
+      className: "hidden md:table-cell min-w-[180px]",
+    },
+  ];
+
+  const renderRow = (test: Test) => (
+    <tr key={test._id} className="hover:bg-gray-50">
+      <td className="px-4 py-3">{test.name}</td>
+      <td className="px-4 py-3 hidden md:table-cell text-gray-600">
+        <div className="flex items-center gap-2">Coming soon</div>
+      </td>
+    </tr>
+  );
+
+  return (
+    <div className="p-20">
+      <div className="flex items-center justify-between mb-4">
+        <h1 className="text-2xl font-bold">Tests</h1>
+      </div>
+
+      {loading && (
+        <div className="mb-4 p-4 bg-blue-50 text-blue-700 rounded-lg">
+          Loading tests...
+        </div>
+      )}
+
+      {error && (
+        <div className="mb-4 p-4 bg-red-50 text-red-700 rounded-lg">
+          Error: {error}
+          <button
+            onClick={fetchTests}
+            className="ml-4 px-3 py-1 bg-red-100 hover:bg-red-200 rounded"
+          >
+            Retry
+          </button>
+        </div>
+      )}
+
+      <div className="overflow-x-auto">
+        {tests.length > 0 ? (
+          <Table<Test> columns={columns} data={tests} renderRow={renderRow} />
+        ) : !loading && !error ? (
+          <div className="p-4 bg-gray-50 text-gray-500 rounded-lg">
+            No tests found
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+export default Page;
