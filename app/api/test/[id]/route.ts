@@ -1,17 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/dbConnect';
 import Test from '../../../../models/Test';
 
-// GET single test by ID
 export async function GET(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
     await dbConnect();
-    
-    const test = await Test.findById(id);
+    const test = await Test.findById(params.id);
     
     if (!test) {
       return NextResponse.json(
@@ -30,18 +27,15 @@ export async function GET(
   }
 }
 
-// UPDATE single test by ID
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
     await dbConnect();
-    
     const body = await request.json();
     
-    const updatedTest = await Test.findByIdAndUpdate(id, body, {
+    const updatedTest = await Test.findByIdAndUpdate(params.id, body, {
       new: true,
       runValidators: true
     });
@@ -63,16 +57,13 @@ export async function PUT(
   }
 }
 
-// DELETE single test by ID
 export async function DELETE(
-  request: Request,
+  request: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await params;
     await dbConnect();
-    
-    const deletedTest = await Test.findByIdAndDelete(id);
+    const deletedTest = await Test.findByIdAndDelete(params.id);
     
     if (!deletedTest) {
       return NextResponse.json(
