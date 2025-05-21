@@ -1,4 +1,4 @@
-//api/p/route.ts
+//api/test/route.ts
 import { NextResponse } from 'next/server';
 import dbConnect from '../../../lib/dbConnect';
 import Test from '../../../models/Test';
