@@ -1,13 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/dbConnect';
 import Test from '../../../../models/Test';
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
     const test = await Test.findById(params.id);
     
     if (!test) {
@@ -28,11 +29,12 @@ export async function GET(
 }
 
 export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
     const body = await request.json();
     
     const updatedTest = await Test.findByIdAndUpdate(params.id, body, {
@@ -58,11 +60,12 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
+  request: Request,
+  context: { params: { id: string } }
 ) {
   try {
     await dbConnect();
+    const params = await context.params;
     const deletedTest = await Test.findByIdAndDelete(params.id);
     
     if (!deletedTest) {
