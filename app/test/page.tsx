@@ -2,6 +2,7 @@
 import axios from "axios";
 import Table from "../components/Tables";
 import { useEffect, useState } from "react";
+import TestModal from "../components/modal/TestModal";
 
 interface Test {
   _id: string;
@@ -49,7 +50,20 @@ const Page = () => {
     <tr key={test._id} className="hover:bg-gray-50">
       <td className="px-4 py-3">{test.name}</td>
       <td className="px-4 py-3 hidden md:table-cell text-gray-600">
-        <div className="flex items-center gap-2">Coming soon</div>
+          <div className="flex items-center gap-2">
+          <TestModal type="view" id={test._id} />
+          <TestModal
+            type="update"
+            id={test._id}
+            data={{ name: test.name }}
+            onSuccess={fetchTests}
+          />
+          <TestModal
+            type="delete"
+            id={test._id}
+            onSuccess={fetchTests}
+          />
+        </div>
       </td>
     </tr>
   );
@@ -58,6 +72,7 @@ const Page = () => {
     <div className="p-20">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Tests</h1>
+         <TestModal type="create" onSuccess={fetchTests} />
       </div>
 
       {loading && (
