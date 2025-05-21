@@ -42,14 +42,14 @@ const Page = () => {
     {
       header: "Action",
       accessor: "_id" as keyof Test, // Use unique key
-      className: "hidden md:table-cell min-w-[180px]",
+      className: "",
     },
   ];
 
   const renderRow = (test: Test) => (
     <tr key={test._id} className="hover:bg-gray-50">
       <td className="px-4 py-3">{test.name}</td>
-      <td className="px-4 py-3 hidden md:table-cell text-gray-600">
+      <td className="px-4 py-3  text-gray-600">
           <div className="flex items-center gap-2">
           <TestModal type="view" id={test._id} />
           <TestModal
@@ -69,7 +69,7 @@ const Page = () => {
   );
 
   return (
-    <div className="p-20">
+    <div className="p-3">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-bold">Tests</h1>
          <TestModal type="create" onSuccess={fetchTests} />
