@@ -2,19 +2,13 @@ import { NextResponse } from 'next/server';
 import dbConnect from '../../../../lib/dbConnect';
 import Test from '../../../../models/Test';
 
-interface Params {
-  params: {
-    id: string
-  }
-}
-
 // GET single test by ID
 export async function GET(
   request: Request,
-  context: Params
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await Promise.resolve(context.params);
+    const { id } = await params;
     await dbConnect();
     
     const test = await Test.findById(id);
@@ -39,10 +33,10 @@ export async function GET(
 // UPDATE single test by ID
 export async function PUT(
   request: Request,
-  context: Params
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await Promise.resolve(context.params);
+    const { id } = await params;
     await dbConnect();
     
     const body = await request.json();
@@ -72,10 +66,10 @@ export async function PUT(
 // DELETE single test by ID
 export async function DELETE(
   request: Request,
-  context: Params
+  { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = await Promise.resolve(context.params);
+    const { id } = await params;
     await dbConnect();
     
     const deletedTest = await Test.findByIdAndDelete(id);
