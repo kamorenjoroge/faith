@@ -11,7 +11,7 @@ const SideBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const menuItems = [
-    { name: 'Dashboard', icon: <FiHome />, path: '/dashboard' },
+    { name: 'Dashboard', icon: <FiHome />, path: '/' },
     { name: 'Products', icon: <FaShoePrints />, path: '/products' },
     { name: 'Orders', icon: <FiShoppingBag />, path: '/orders' },
     { name: 'Customers', icon: <FiUsers />, path: '/customers' },
