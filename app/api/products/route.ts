@@ -1,7 +1,6 @@
 // app/api/products/route.ts
 import { NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
-import path from 'path';
+import cloudinary from '../../../lib/cloudinary';
 import dbConnect from '../../../lib/dbConnect';
 import Product from '../../../models/Products';
 
@@ -18,33 +17,38 @@ export async function POST(request: Request) {
     const details = formData.get('details') as string;
     const color = formData.get('color') as string;
     
-    // Process images
+    // Process images with Cloudinary
     const imageFiles = formData.getAll('images') as File[];
-    const imagePaths: string[] = [];
+    const imageUrls: string[] = [];
     
     for (const file of imageFiles) {
-      // Convert file to buffer
-      const buffer = Buffer.from(await file.arrayBuffer());
+      const buffer = await file.arrayBuffer();
+      const array = new Uint8Array(buffer);
       
-      // Create unique filename
-      const filename = Date.now() + '_' + file.name.replace(/\s+/g, '_');
-      const relativePath = `/images/${filename}`;
-      const filePath = path.join(process.cwd(), 'public', relativePath);
+      const result = await new Promise<string>((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+          { folder: 'products' }, // Customize folder as needed
+          (error, result) => {
+            if (error) {
+              reject(error);
+              return;
+            }
+            resolve(result!.secure_url);
+          }
+        ).end(array);
+      });
       
-      // Write file to public/images folder
-      await writeFile(filePath, buffer);
-      
-      imagePaths.push(relativePath);
+      imageUrls.push(result);
     }
     
-    // Create new product
+    // Create new product with Cloudinary URLs
     const product = await Product.create({
       name,
       price,
       quantity,
       details,
       color,
-      images: imagePaths
+      images: imageUrls
     });
     
     return NextResponse.json(
@@ -52,7 +56,6 @@ export async function POST(request: Request) {
       { status: 201 }
     );
     
-  
   } catch (error: unknown) {
     console.error('Error creating product:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
@@ -74,7 +77,7 @@ export async function GET() {
       { status: 200 }
     );
     
-  } catch (error: unknown) { // Handle errors not to be any type 
+  } catch (error: unknown) {
     console.error('Error fetching products:', error);
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
@@ -82,4 +85,4 @@ export async function GET() {
       { status: 400 }
     );
   }
-  }
+}
