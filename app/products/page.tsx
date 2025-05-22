@@ -126,7 +126,7 @@ const Page = () => {
       </div>
 
       {loading && (
-        <div className="mb-4 p-4 bg-blue-50 text-blue-700 rounded-lg">
+        <div className="mb-4 p-4 bg-green-50 text-green-700 rounded-lg">
           Loading products...
         </div>
       )}

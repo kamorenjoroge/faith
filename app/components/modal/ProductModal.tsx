@@ -148,7 +148,7 @@ const ProductModal: React.FC<ProductModalProps> = ({ type, data, id, onSuccess }
       </button>
 
       {open && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-60">
+        <div className="fixed inset-0 flex items-center justify-center z-50  bg-opacity-60">
           <div className="bg-white rounded-2xl shadow-2xl p-6 w-[95%] sm:w-[90%] md:w-[80%] lg:w-[70%] xl:w-[60%] max-h-[95vh] overflow-y-auto relative">
             <button
               onClick={() => setOpen(false)}
